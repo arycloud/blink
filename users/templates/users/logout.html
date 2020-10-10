@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="margin-top: 5%; margin-left: 15em;">
+        <h1 class="ml-lg-3">Are you sure to logout?</h1>
+        <form action="{% url 'users:logout' %}" method="post" class="center">
+            {% csrf_token %}
+            <div class="btn-group btn-group-lg ml-lg-5 pl-lg-5">
+                <a href="{% url 'home' %}">
+                    <button type="button" class="btn btn-lg btn-danger text-white">
+                        Cancel
+                    </button>
+                </a>
+                <button type="submit" class="btn btn-lg btn-info ml-2">Logout</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

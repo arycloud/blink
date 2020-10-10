@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col"># &nbsp; Personal Information:</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">Fullname</th>
+            <td>{{ user.fullname }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Email</th>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Date Joined</th>
+            <td>{{ user.date_join|date }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <hr>
+    {% if user.is_instructor %}
+        {% if courses %}
+            <h2>Courses you have created:</h2>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Created at</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ course.title }}</td>
+                    <td>{{ course.created|date }}</td>
+                    <td>
+                        <p class="btn-group-sm">
+                            <a href="{% url 'courses:course-edit' course.slug %}"
+                            class="btn btn-sm btn-danger">Edit</a>
+                            <a href="{% url 'courses:course-detail'  course.slug %}"
+                           class="btn btn-sm btn-danger">View</a>
+                            <a href="{% url 'courses:course-delete' course.slug %}"
+                            class="btn btn-sm btn-danger">Delete</a>
+                        </p>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endif %}
+    {% if courses_joined %}
+        <h2>Courses you enrolled in:</h2>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for course in courses_joined %}
+                <tr>
+                    <td>{{ course.title }}</td>
+                    <td><a href="{% url 'courses:student-course-view'  course.id %}"
+                           class="btn btn-sm btn-danger">View</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <form action="{% url 'courses:course-edit'  course.slug%}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3 class="text-center mt-3">Editing Course: {{ course.title }}</h3>
+        {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+        {{ form|crispy }}
+        <button class="btn btn-danger float-right btn-lg mb-3 mt-0" type="submit">Save</button>
+    </form>
+{% endblock %}

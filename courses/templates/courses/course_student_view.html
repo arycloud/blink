@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load embed_video_tags %}
+{% load course %}
+
+{% block content %}
+    <div class="row p-4 p-md-5 text-white rounded bg-dark w-100">
+        <div class="col-md-3 col-md-offset-2">
+            <img src="{{ course.course_image.url }}" class="img-thumbnail" alt="">
+        </div>
+        <div class="col-md-9">
+            <h1 class="display-4 font-italic">{{ course.title }}</h1>
+            <p><i>Created by: {{ course.owner.fullname }} at {{ course.created|date }}</i></p>
+            <p class="lead my-3">{{ course.overview }}</p>
+        </div>
+    </div>
+
+    <div class="row mt-2 mb-2">
+        <div class="container mt-2">
+            {% if course.modules.all|length > 0 %}
+                <h2>{{ course.title }}'s Modules</h2>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <ul class="nav nav-pills flex-column" id="myTab" role="tablist">
+                            {% for module in course.modules.all %}
+                                {% if forloop.first %}
+                                    <li class="nav-item mt-2 ">
+                                        <a class="nav-link active show bg-danger text-white"
+                                           id="{{ module.title|cut:" "|lower }}-tab"
+                                           data-toggle="tab"
+                                           href="#{{ module.title|cut:" "|lower }}" role="tab"
+                                           aria-controls="{{ module.title|cut:" "|lower }}" aria-selected="true">
+                                            {{ module.order|add:1 }}: {{ module.title }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item mt-2">
+                                        <a class="nav-link bg-danger text-white"
+                                           id="{{ module.title|cut:" "|lower }}-tab" data-toggle="tab"
+                                           href="#{{ module.title|cut:" "|lower }}" role="tab"
+                                           aria-controls="{{ module.title|cut:" "|lower }}" aria-selected="true">
+                                            {{ module.order|add:1 }}: {{ module.title }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- /.col-md-4 -->
+                    <div class="col-md-9">
+                        <div class="tab-content" id="myTabContent">
+                            {% for module in course.modules.all %}
+                                {% if forloop.first %}
+                                    <div class="tab-pane fade show active" id="{{ module.title|cut:" "|lower }}"
+                                         role="tabpanel"
+                                         aria-labelledby="{{ module.title|cut:" "|lower }}-tab">
+                                        <h2>{{ module.title }}</h2>
+                                        <p>{{ module.description }}</p>
+                                        <hr>
+                                        {% if user.is_authenticated %}
+                                            {% if module.contents.all|length > 0 %}
+                                                <h3>Contents</h3>
+                                                <ul class="list-group list-group-flush">
+                                                    {% for content in module.contents.all %}
+                                                        {% with item=content.item %}
+                                                            <li class="list-group-item"><a
+                                                                    href="#{{ item.title|cut:" "|lower }}"
+                                                                    aria-controls="multiCollapseExample1"
+                                                                    data-toggle="collapse" aria-expanded="false"
+                                                                    class="text-danger">
+                                                                {{ item.title }}
+                                                            </a>
+                                                                <span class="badge badge-primary badge-pill float-right mr-2">
+                                                                {{ item|model_name }}</span>
+                                                            </li>
+                                                            <div class="collapse multi-collapse"
+                                                                 id="{{ item.title|cut:" "|lower }}">
+                                                                {% if item|model_name == 'image' %}
+                                                                    <div class="card card-body">
+                                                                        <img src="{{ item.content.url }}" alt=""
+                                                                             class="img-fluid align-content-center"/>
+                                                                    </div>
+                                                                {% elif item|model_name == 'video' %}
+                                                                    <div class="card card-body">{% video item.content "small" %}</div>
+                                                                {% elif item|model_name == 'file' %}
+                                                                    <div class="card card-body"><a
+                                                                            href="{{ item.content.url }}">Grab File</a>
+                                                                    </div>
+                                                                {% else %}
+                                                                    <div class="card card-body">{{ item.content }}</div>
+                                                                {% endif %}
+                                                            </div>
+                                                        {% endwith %}
+                                                    {% endfor %}
+                                                </ul>
+                                                <hr>
+                                            {% endif %}
+                                        {% else %}
+                                            <p><a href="{% url 'users:login' %}">Login</a> to view course contents!</p>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <div class="tab-pane fade show" id="{{ module.title|cut:" "|lower }}"
+                                         role="tabpanel"
+                                         aria-labelledby="{{ module.title|cut:" "|lower }}-tab">
+                                        <h2>{{ module.title }}</h2>
+                                        <p>{{ module.description }}</p>
+                                        <hr>
+                                        {% if user.is_authenticated %}
+                                            {% if module.contents.all|length > 0 %}
+                                                <h3>Contents</h3>
+                                                <ul class="list-group list-group-flush">
+                                                    {% for content in module.contents.all %}
+                                                        {% with item=content.item %}
+                                                            <li class="list-group-item"><a
+                                                                    href="#{{ item.title|cut:" "|lower }}"
+                                                                    aria-controls="multiCollapseExample1"
+                                                                    data-toggle="collapse" aria-expanded="false"
+                                                                    class="text-danger">
+                                                                {{ item.title }}
+                                                            </a>
+                                                                <span class="badge badge-primary badge-pill float-right mr-2">
+                                                                {{ item|model_name }}</span>
+                                                            </li>
+                                                            {#                                                        <div class="collapse multi-collapse"#}
+                                                            {#                                                             id="{{ item.title|cut:" "|lower }}">#}
+                                                            {#                                                            {% if item|model_name == 'image' %}#}
+                                                            {#                                                                <div class="card card-body">#}
+                                                            {#                                                                    <img src="{{ item.content.url }}" alt=""#}
+                                                            {#                                                                         class="img-fluid align-content-center"/>#}
+                                                            {#                                                                </div>#}
+                                                            {#                                                            {% elif item|model_name == 'video' %}#}
+                                                            {#                                                                <div class="card card-body">{% video item.content "small" %}</div>#}
+                                                            {#                                                            {% elif item|model_name == 'file' %}#}
+                                                            {#                                                                <div class="card card-body"><a#}
+                                                            {#                                                                        href="{{ item.content.url }}">Grab File</a>#}
+                                                            {#                                                                </div>#}
+                                                            {#                                                            {% else %}#}
+                                                            {#                                                                <div class="card card-body">{{ item.content }}</div>#}
+                                                            {#                                                            {% endif %}#}
+                                                            {#                                                        </div>#}
+                                                        {% endwith %}
+                                                    {% endfor %}
+                                                </ul>
+                                                <hr>
+                                            {% endif %}
+                                            {% if request.user.id == module.course.owner.id %}
+                                                <h3>Add Content:</h3>
+                                                <div class="offset-3 col-md-3 offset-3 ">
+                                                    <div class="btn-group">
+                                                        <a href="{% url 'courses:module-content-create' module.id 'text' %}"
+                                                           class="btn btn-sm btn-danger">Text</a>
+                                                        <a href="{% url 'courses:module-content-create' module.id 'image' %}"
+                                                           class="btn btn-sm btn-danger">Image</a>
+                                                        <a href="{% url 'courses:module-content-create' module.id 'file' %}"
+                                                           class="btn btn-sm btn-danger">File</a>
+                                                        <a href="{% url 'courses:module-content-create' module.id 'video' %}"
+                                                           class="btn btn-sm btn-danger">Video</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <p><a href="{% url 'users:login' %}">Login</a> to view course contents!</p>
+                                        {% endif %}
+                                    </div>
+
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <h4> This course doesn't have any module, yet.
+                    If you are the owner, click on
+                    <b class="text-danger">Edit Modules</b> button above to add new modules. </h4>
+                <hr>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

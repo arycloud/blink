@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if course.modules.all|length > 0 %}
+            <h3 class="text-center mt-3">Edit Modules of
+                <b class="text-danger"><i>{{ course.title }}</i></b>
+            </h3>
+        {% else %}
+            <h3 class="text-center mt-3">Add Modules in
+                <b class="text-danger"><i>{{ course.title }}</i></b>
+            </h3>
+        {% endif %}
+        {% if formset.errors %}
+            {{ formset.errors }}
+        {% endif %}
+        {{ formset|crispy }}
+        {{ formset.management_form|crispy }}
+        <button class="btn btn-danger float-right btn-lg mb-3 mt-0" type="submit">Save</button>
+    </form>
+{% endblock %}
