@@ -14,7 +14,7 @@ SECRET_KEY = '=8(v$qv^07suutcj8g0csc$72szgbn+9u5+@89ip@hblh-lcoh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['142.93.11.132']
+ALLOWED_HOSTS = ['142.93.11.132', 'blinklms.me', 'www.blinklms.me']
 
 
 # Application definition
