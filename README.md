@@ -1,4 +1,5 @@
 #Introduction
+
 BLINK is a Learning Management System built on top of Django (3.1).
 It allows the Instructors to create courses, add modules and content of various types like 
 Audio, Video , Images and Text. As an Instructor you must have the 
